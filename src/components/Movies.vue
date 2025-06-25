@@ -17,10 +17,6 @@ import { ref, onMounted, nextTick } from 'vue';
 import MovieCard from './MovieCard.vue';
 import MovieModal from './MovieModal.vue';
 
-import { gsap } from 'gsap';
-import { Flip } from 'gsap/dist/Flip';
-gsap.registerPlugin(Flip);
-
 export default {
     name: "Movies",
     components: {
