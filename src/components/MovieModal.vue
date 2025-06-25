@@ -59,9 +59,6 @@
 <script>
 import { ref, onMounted, watch } from 'vue';
 import { formatDateToMonthYear, formatRuntime } from '@/lib/utils';
-import { gsap } from 'gsap';
-import { Flip } from 'gsap/dist/Flip';
-gsap.registerPlugin(Flip);
 
 export default {
     name: "MovieModal",
