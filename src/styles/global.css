@@ -7,7 +7,7 @@
 
 @layer utilities {
   .background-blur {
-    @apply bg-white/70 hover:bg-zinc-200/70 dark:bg-zinc-800/50 dark:hover:bg-black/50 backdrop-blur-lg;
+    @apply bg-white/70 hover:bg-zinc-200/70 dark:bg-zinc-800/50 dark:hover:bg-zinc-900/50 backdrop-blur-lg;
   }
   .background-blur-no-hover {
     @apply bg-white/70 dark:bg-zinc-800/50 backdrop-blur-xl;
