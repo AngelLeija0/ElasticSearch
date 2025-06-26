@@ -11,10 +11,10 @@
         class="movie-card-image w-full h-auto rounded-lg shadow-lg object-cover"
         @load="onImageLoad"
       />
-      <div class="absolute bottom-0 left-0 w-full h-1/2 rounded-b-lg bg-gradient-to-t from-zinc-300 dark:from-black via-white/80 dark:via-black/80 to-transparent z-10"></div>
+      <div class="absolute bottom-0 left-0 w-full h-1/2 rounded-b-lg bg-gradient-to-t from-black via-black/80 to-transparent z-10"></div>
     </div>
     <div class="absolute bottom-0 left-0 w-full px-6 pb-8 z-20 flex flex-col">
-      <h2 class="text-xl font-semibold text-black dark:text-white drop-shadow-md">
+      <h2 class="text-xl font-semibold text-white drop-shadow-md">
         {{ movie.title }}
       </h2>
     </div>
