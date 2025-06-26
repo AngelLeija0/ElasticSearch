@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 import MovieCard from './MovieCard.vue';
 import MovieModal from './MovieModal.vue';
 
@@ -28,7 +28,7 @@ export default {
         const selectedMovie = ref(null);
 
         const getMovies = async () => {
-            const response = await fetch(`${window.location.origin}/api/movies.json?pageSize=24`);
+            const response = await fetch(`${window.location.origin}/api/movies.json?pageSize=80`);
             moviesList.value = await response.json();
         };
 
