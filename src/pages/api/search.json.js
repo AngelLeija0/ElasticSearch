@@ -1,27 +1,28 @@
 import BonsaiSearch from "./services/BonsaiSearch";
 
 export async function GET({ url }) {
-  const query = url.searchParams.get('q');
+  const query = url.searchParams.get("q");
+  const pageSize = url.searchParams.get("pageSize") || 24;
 
   if (!query) {
-    return new Response(JSON.stringify({ error: 'Missing search query' }), {
+    return new Response(JSON.stringify({ error: "Missing search query" }), {
       status: 400,
     });
   }
   
   try {
-    const movies = await BonsaiSearch.searchMovies(query);
+    const movies = await BonsaiSearch.searchMovies({ query, pageSize });
 
     return new Response(JSON.stringify(movies), {
       status: 200,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
     });
 
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ error: 'Search failed' }), {
+    return new Response(JSON.stringify({ error: "Search failed" }), {
       status: 500,
     });
   }

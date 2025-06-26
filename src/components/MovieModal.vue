@@ -15,7 +15,8 @@
             </button>
             <div
                 class="background-blur-no-hover flex flex-col md:flex-row gap-6 lg:gap-8 w-full lg:w-auto h-full lg:h-auto p-4 lg:p-0 lg:pr-8 rounded-xl overflow-hidden relative">
-                <div class="lg:w-[450px] h-[45%] mx-auto lg:mx-none lg:h-full flex items-center justify-center relative aspect-[9/14]">
+                <div
+                    class="lg:w-[450px] h-[45%] mx-auto lg:mx-none lg:h-full flex items-center justify-center relative aspect-[9/14]">
                     <div v-if="!imageLoaded"
                         class="w-full h-full absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 animate-pulse rounded-lg">
                         <div class="w-full h-full bg-zinc-200 dark:bg-zinc-700 rounded-lg"></div>
@@ -34,9 +35,13 @@
                             Original title: {{ movie.original_title }}
                         </h3>
                         <p class="text-base text-zinc-900 dark:text-zinc-200">
-                            {{ formatDateToMonthYear(movie.release_date) }}&nbsp; • &nbsp; {{
-                                formatRuntime(movie.runtime)
-                            }}
+                            <template v-if="String(movie.status).toLocaleLowerCase() === 'released'">
+                                {{ formatDateToMonthYear(movie.release_date) }}
+                            </template>
+                            <template v-else>
+                                <span class="text-xs px-2 py-0.5 rounded-md text-white bg-red-500">Not released</span>
+                            </template>
+                            &nbsp; • &nbsp;{{ formatRuntime(movie.runtime) }}
                             &nbsp; • &nbsp;{{ String(movie.original_language).toUpperCase() }}
                         </p>
                     </div>
@@ -46,7 +51,10 @@
                             {{ genre }}
                         </span>
                     </div>
-                    <p class="text-base text-zinc-900 dark:text-zinc-200 mt-2 mb-4 line-clamp-5 sm:line-clamp-6 md:line-clamp-none">{{ movie.overview }}</p>
+                    <p
+                        class="text-base text-zinc-900 dark:text-zinc-200 mt-2 mb-4 line-clamp-5 sm:line-clamp-6 md:line-clamp-none">
+                        {{
+                        movie.overview }}</p>
                     <a :href="`https://www.imdb.com/es/title/${movie.imdb_id}`" class="w-fit">
                         <img src="/imdb-logo.svg" alt="IMDb Logo" srcset="">
                     </a>

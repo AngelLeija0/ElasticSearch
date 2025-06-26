@@ -99,13 +99,13 @@ class BonsaiSearch {
     }
   }
 
-  async searchMovies(query = "") {
+  async searchMovies({ query = "", pageSize = 24 }) {
     if (!query) {
       return [];
     }
 
     try {
-      const result = await fetch(`${this.API_URL}?q=${query}&size=${10}`, {
+      const result = await fetch(`${this.API_URL}?q=${query}&size=${pageSize}`, {
         method: "GET",
         headers: this._getAuthHeaders(),
       });
