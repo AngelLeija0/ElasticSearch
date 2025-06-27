@@ -1,17 +1,36 @@
 <template>
-    <section id="search" class="w-full flex flex-col">
-        <div class="w-full h-full max-w-100 mx-auto mb-20 flex justify-center select-none">
+    <section id="search" class="w-full flex flex-col min-h-100">
+        <div class="w-full h-full max-w-100 mx-auto mb-6 flex justify-center select-none">
             <input v-model="searchQuery" @input="onInput" placeholder="Search a movie"
-                class="text-sm w-full px-4 py-3 rounded-lg background-blur focus:border-none" autocomplete="off" />
+                class="text-sm w-full px-4 py-3 rounded-lg background-blur border border-zinc-400/50 dark:border-zinc-700/50 transition-colors"
+                autocomplete="off" />
         </div>
-        <div v-if="!loading" class="flex flex-col w-full gap-8">
-            <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <MovieCard v-for="(movie, i) in moviesList" :movie="movie" :key="movie.id" @select="openMovieModal" />
+        <div class="w-full flex flex-wrap justify-center gap-1.5 px-2 mb-8">
+            <button v-for="(genre, i) in movieGenres" :key="i + 1" type="button" @click="handleGenreFilter(genre)"
+                :class="`${isGenreActive(genre) ? 'text-white bg-black dark:text-black dark:bg-white border-transparent pl-2 pr-1.5' : 'text-zinc-800 dark:text-zinc-200 border-zinc-400/50 dark:border-zinc-600/50 px-4'} flex items-center gap-1.5 cursor-pointer text-sm text-nowrap py-1 rounded-lg border transition-colors`">
+                {{ genre }}
+                <svg v-if="isGenreActive(genre)" class="size-3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M18 6l-12 12" />
+                    <path d="M6 6l12 12" />
+                </svg> 
+                </button>
+        </div>
+        <div v-if="!loading" class="flex flex-col w-full">
+            <div v-if="moviesList.length > 0" class="flex flex-col w-full gap-8">
+                <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <MovieCard v-for="(movie, i) in moviesList" :movie="movie" :key="movie.id"
+                        @select="openMovieModal" />
+                </div>
+                <div class="col-span-4 flex justify-center">
+                    <button type="button"
+                        class="bg-black dark:bg-white dark:hover:bg-zinc-200 px-8 py-2.5 cursor-pointer text-base rounded-lg text-white dark:text-black font-medium select-none disabled:opacity-50 disabled:cursor-not-allowed"
+                        @click="incrementMoviesQuantity" :disabled="moviesQuantity >= 100000">Load more</button>
+                </div>
             </div>
-            <div class="col-span-4 flex justify-center">
-                <button type="button"
-                    class="bg-black dark:bg-white dark:hover:bg-zinc-200 px-8 py-2.5 cursor-pointer text-base rounded-lg text-white dark:text-black font-medium select-none disabled:opacity-50 disabled:cursor-not-allowed"
-                    @click="incrementMoviesQuantity" :disabled="moviesQuantity >= 100000">Load more</button>
+            <div v-else class="flex justify-center w-full">
+                <p class="text-sm text-zinc-800 dark:text-zinc-200 mt-8">No movies found</p>
             </div>
         </div>
         <div v-else class="w-full flex flex-col items-center min-h-80 py-10">
@@ -34,9 +53,31 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import MovieCard from './MovieCard.vue';
 import MovieModal from './MovieModal.vue';
+
+const movieGenres = [
+    "Action",
+    "Adventure",
+    "Animation",
+    "Comedy",
+    "Crime",
+    "Documentary",
+    "Drama",
+    "Family",
+    "Fantasy",
+    "History",
+    "Horror",
+    "Music",
+    "Mystery",
+    "Romance",
+    "Science Fiction",
+    "TV Movie",
+    "Thriller",
+    "War",
+    "Western"
+];
 
 export default {
     name: "Movies",
@@ -50,10 +91,12 @@ export default {
         const moviesQuantity = ref(40);
         const selectedMovie = ref(null);
         const searchQuery = ref("");
+        const genreFilter = ref([]);
+        const genreFilterString = computed(() => genreFilter.value.join(','));
 
         const getMovies = async () => {
-            if (moviesList.lenght == 0) loading.value = true;
-            const response = await fetch(`${window.location.origin}/api/movies.json?pageSize=${moviesQuantity.value}`);
+            if (moviesList.length == 0) loading.value = true;
+            const response = await fetch(`${window.location.origin}/api/movies.json?pageSize=${moviesQuantity.value}${genreFilter.value.length > 0 ? `&genres=${genreFilterString.value}` : ''}`);
             moviesList.value = await response.json();
             loading.value = false;
         };
@@ -93,6 +136,19 @@ export default {
             } else {
                 await getMovies();
             }
+        };
+
+        const handleGenreFilter = async (genre) => {
+            if (!isGenreActive(genre)) {
+                genreFilter.value.push(genre);
+            } else {
+                genreFilter.value = genreFilter.value.filter(g => g !== genre);
+            }
+            await getMovies();
+        };
+
+        const isGenreActive = (genre) => {
+            return genreFilter.value.includes(genre);
         }
 
         onMounted(async () => {
@@ -103,11 +159,15 @@ export default {
             loading,
             moviesList,
             moviesQuantity,
+            movieGenres,
             onInput,
             selectedMovie,
             openMovieModal,
             searchQuery,
-            incrementMoviesQuantity
+            incrementMoviesQuantity,
+            handleGenreFilter,
+            genreFilterString,
+            isGenreActive
         };
     }
 }
