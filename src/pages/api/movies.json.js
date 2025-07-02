@@ -1,6 +1,10 @@
 import BonbasiSearch from "./services/BonsaiSearch";
+import { checkInternalRequest } from "./middlewares/origin";
 
-export async function GET({ url }) {
+export async function GET({ url, request }) {
+  const authError = checkInternalRequest(request);
+  if (authError) return authError;
+  
   try {
     const pageSize = url.searchParams.get("pageSize")
     const status = url.searchParams.get("status") || null;

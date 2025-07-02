@@ -1,6 +1,10 @@
 import { IMAGE_SERVICE } from "astro:env/client";
+import { checkInternalRequest } from "./middlewares/origin";
 
-export async function GET({ url }) {
+export async function GET({ url, request }) {
+  const authError = checkInternalRequest(request);
+  if (authError) return authError;
+
   const path = new URL(url).searchParams.get("path");
 
   if (!path) {
@@ -14,7 +18,7 @@ export async function GET({ url }) {
     status: res.status,
     headers: {
       "Content-Type": contentType,
-      "Cache-Control": "public, max-age=86400"
+      "Cache-Control": "public, max-age=86400",
     },
   });
 }
