@@ -1,10 +1,15 @@
 import BonbasiSearch from "./services/BonsaiSearch";
 import { checkInternalRequest } from "./middlewares/origin";
+import { checkInternalKey } from "./middlewares/internal-key";
 
 export async function GET({ url, request }) {
   const authError = checkInternalRequest(request);
   if (authError) return authError;
-  
+
+  if (!checkInternalKey(request)) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   try {
     const pageSize = url.searchParams.get("pageSize")
     const status = url.searchParams.get("status") || null;

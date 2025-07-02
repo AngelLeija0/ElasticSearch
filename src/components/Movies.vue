@@ -9,13 +9,13 @@
             <button v-for="(genre, i) in movieGenres" :key="i + 1" type="button" @click="handleGenreFilter(genre)"
                 :class="`${isGenreActive(genre) ? 'text-white bg-black dark:text-black dark:bg-white border-transparent pl-2 pr-1.5' : 'text-zinc-800 dark:text-zinc-200 border-zinc-400/50 dark:border-zinc-600/50 px-4'} flex items-center gap-1.5 cursor-pointer text-sm text-nowrap py-1 rounded-lg border transition-colors`">
                 {{ genre }}
-                <svg v-if="isGenreActive(genre)" class="size-3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg v-if="isGenreActive(genre)" class="size-3" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M18 6l-12 12" />
                     <path d="M6 6l12 12" />
-                </svg> 
-                </button>
+                </svg>
+            </button>
         </div>
         <div v-if="!loading" class="flex flex-col w-full">
             <div v-if="moviesList.length > 0" class="flex flex-col w-full gap-8">
@@ -53,9 +53,16 @@
 </template>
 
 <script>
+import { INTERNAL_API_KEY } from 'astro:env/client';
 import { ref, onMounted, computed } from 'vue';
 import MovieCard from './MovieCard.vue';
 import MovieModal from './MovieModal.vue';
+
+const requestConfig = {
+    headers: {
+        "X-Internal-Access": INTERNAL_API_KEY
+    }
+}
 
 const movieGenres = [
     "Action",
@@ -96,7 +103,8 @@ export default {
 
         const getMovies = async () => {
             if (moviesList.length == 0) loading.value = true;
-            const response = await fetch(`${window.location.origin}/api/movies.json?pageSize=${moviesQuantity.value}${genreFilter.value.length > 0 ? `&genres=${genreFilterString.value}` : ''}`);
+            const response = await fetch(`/api/movies.json?pageSize=${moviesQuantity.value}${genreFilter.value.length > 0 ? `&genres=${genreFilterString.value}` : ''}`, requestConfig);
+            if (response.status != 200) return loading.value = false;
             moviesList.value = await response.json();
             loading.value = false;
         };
@@ -107,7 +115,8 @@ export default {
                 await getMovies();
                 return;
             }
-            const response = await fetch(`${window.location.origin}/api/search.json?q=${encodeURIComponent(query)}&pageSize=${moviesQuantity.value}`);
+            const response = await fetch(`/api/search.json?q=${encodeURIComponent(query)}&pageSize=${moviesQuantity.value}`, requestConfig);
+            if (response.status != 200) return loading.value = false;
             moviesList.value = await response.json();
         };
 

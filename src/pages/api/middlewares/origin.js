@@ -2,7 +2,7 @@ export function checkInternalRequest(request) {
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
 
-  const allowedOrigin = "https://elastic-search-gray.vercel.app";
+  const allowedOrigin = "http://localhost:4321";
 
   if (
     origin && origin !== allowedOrigin ||
@@ -16,5 +16,5 @@ export function checkInternalRequest(request) {
     });
   }
 
-  return null; // Si pasa, no hay error
+  return null;
 }
