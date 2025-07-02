@@ -15,6 +15,7 @@ export default defineConfig({
   integrations: [vue()],
   env: {
     schema: {
+      APP_URL: envField.string({ context: "server", access: "secret" }),
       BONSAI_URL: envField.string({ context: "server", access: "secret" }),
       BONSAI_USERNAME: envField.string({ context: "server", access: "secret" }),
       BONSAI_PASSWORD: envField.string({ context: "server", access: "secret" }),

@@ -1,8 +1,10 @@
+import { APP_URL } from "astro:env/server"
+
 export function checkInternalRequest(request) {
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
 
-  const allowedOrigin = "http://localhost:4321";
+  const allowedOrigin = APP_URL;
 
   if (
     origin && origin !== allowedOrigin ||
